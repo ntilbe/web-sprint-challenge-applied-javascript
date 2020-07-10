@@ -23,28 +23,28 @@
 
 import axios from "axios";
 
-const articleTitles = [
-  "bootstrap",
+const articleTitles = [ // an array stored in a variable called 'articleTitles'
+  "bootstrap",  // These will be the trending topics
   "javascript",
   "technology",
   "jquery",
   "node",
 ];
 
-const cardsContainer = document.querySelector(".cards-container");
-const errorContainer = document.querySelector('.errors-container');
+const cardsContainer = document.querySelector(".cards-container"); // gets the first '.cards-container' element
+const errorContainer = document.querySelector('.errors-container'); // gets the first '.errors-container' element
 
-axios
-  .get("https://lambda-times-backend.herokuapp.com/articles")
-  .then((result) => {
-    articleTitles.forEach((title) => {
+axios // object 
+  .get("https://lambda-times-backend.herokuapp.com/articles") // returns a promise, busy getting data and will return in a moment
+  .then((result) => {   // .then and .catch needed to deal with the data
+    articleTitles.forEach((title) => { // deal with the response data in here (.then)
         const className = `article-topic-${title}`;
       result.data.articles[title].forEach((article) => {
-        cardsContainer.appendChild(createCard(article, className));
+        cardsContainer.appendChild(createCard(article, className)); 
       });
     });
   })
-  .catch((error) => {
+  .catch((error) => {  // deal with the error in here
     const errorMessage = document.createElement('p');
     errorMessage.innerText = error.message;
     errorContainer.appendChild(errorMessage);

@@ -10,26 +10,52 @@
 //
 // NOTE: you do _not_ need to install axios as it's included in the HTML via script element
 
-axios.get('https://lambda-times-backend.herokuapp.com/topics')
-    .then(response => {
-        // create all topics variable -- could just do .forEach on response.data.topics
-        const allTopics = response.data.topics
-        // forEach topic, attach to DOM a newly created tab
-        allTopics.forEach(topic => {
-            document.querySelector('.topics').appendChild(createTab(topic))
-        })  
-    })
-    .catch(err => console.log(err))
+import axios from "axios";
 
+const topics = {
+  javascript: "javascript",
+  bootstrap: "bootstrap",
+  technology: "technology",
+  jquery: "jquery",
+  "node.js": "node",
+};
 
-function createTab(topic) {
-    // define new element(s)
-    const tab = document.createElement('div')
-    // set up structure -- n/a
-    // add classes to element
-    tab.classList.add('tab')
-    // set text content -- (to topic parameter passed in)
-    tab.textContent = topic
-    // RETURN 
-    return tab
-    }
+const articleClassTemplate = "article-topic-";
+
+function createTopicItem(topicName) {
+  const tabItem = document.createElement("div");
+
+  tabItem.addEventListener("click", () => {
+    const articles = document.querySelectorAll(".card");
+    articles.forEach((article) => {
+      if (
+        !article.classList.contains(
+          `${articleClassTemplate}${topics[topicName]}`
+        )
+      ) {
+        article.style.display = "none";
+      } else {
+        article.style.display = "flex";
+      }
+    });
+  });
+
+  tabItem.classList.add("tab");
+  tabItem.innerText = `${topicName}`;
+  return tabItem;
+}
+
+const topicContainer = document.querySelector(".topics");
+
+axios
+  .get("https://lambda-times-backend.herokuapp.com/topics")
+  .then((result) => {
+    const topicList = result.data.topics;
+    topicList.forEach((topic) => {
+      const topicElement = createTopicItem(topic);
+      topicContainer.appendChild(topicElement);
+    });
+  })
+  .catch((error) => {
+    console.log(error.message);
+  });
